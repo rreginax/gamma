@@ -2,7 +2,7 @@ import random
 import numpy as np
 
 def generate_nonplanar_graph(num_nodes):
-    # Создаем матрицу смежности
+   
     adj_matrix = np.zeros((num_nodes, num_nodes), dtype=int)
     
     # Добавляем случайные ребра
@@ -21,11 +21,10 @@ def generate_nonplanar_graph(num_nodes):
     
     return adj_matrix
 
-# Пример использования
 num_nodes = 30000
 adj_matrix = generate_nonplanar_graph(num_nodes)
 
-# Запись матрицы смежности в файл
+
 with open("nonplanar_graph.txt", "w") as f:
     for row in adj_matrix:
         f.write(" ".join(map(str, row)) + "\n")
