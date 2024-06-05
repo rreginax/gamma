@@ -21,7 +21,7 @@ def generate_nonplanar_graph(num_nodes):
     
     return adj_matrix
 
-num_nodes = 30000
+num_nodes = 20000
 adj_matrix = generate_nonplanar_graph(num_nodes)
 
 
