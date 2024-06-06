@@ -1,38 +1,34 @@
 import networkx as nx
 import matplotlib.pyplot as plt
-
-# Исходный граф
-edges = [(0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)]
-G = nx.Graph()
-G.add_edges_from(edges)
-
-# Данные о гранях
+# Определение граней плоского графа
 faces = [
     [3, 2, 0],  # Внешняя грань
-    [0, 3, 0, 2, 1],  
-    [3, 1, 0],  
-    [3, 2, 1]  
+    [0, 3, 0, 2, 1],
+    [3, 1, 0],
+    [3, 2, 0],
+    [3, 2, 1]
 ]
 
-# Проверка на планарность
-if nx.is_planar(G):
-    print("Граф является планарным!")
-    
-    # Вычисление плоской укладки
-    pos = nx.spring_layout(G)
-    
-    # Отрисовка графа
-    plt.figure(figsize=(8, 8))
-    nx.draw(G, pos, with_labels=True, node_color='blue', edge_color='black', font_size=12, font_color='white')
-    
-    # Отрисовка граней
-    for face in faces:
-        nodes = face
-        plt.plot([pos[n][0] for n in nodes] + [pos[nodes[0]][0]],
-                [pos[n][1] for n in nodes] + [pos[nodes[0]][1]], 'k-', linewidth=2)
-    
-    plt.title("Плоская укладка графа")
-    plt.axis('equal')
-    plt.show()
-else:
-    print("Граф не является планарным.")
+# Создание графа
+G = nx.Graph()
+G.add_edges_from([(u, v) for face in faces for u, v in zip(face, face[1:]+[face[0]])])
+
+# Укладка графа
+pos = nx.planar_layout(G)
+laidVertices = [False] * len(G.nodes)
+
+def lay_chain(chain):
+    for u, v in zip(chain, chain[1:]):
+        G.edges[u, v]['color'] = 'red'
+        laidVertices[u] = laidVertices[v] = True
+    return True
+
+for face in faces:
+    lay_chain(face)
+
+# Визуализация
+plt.figure(figsize=(10, 10))
+nx.draw(G, pos, with_labels=True, node_color=[('blue' if laidVertices[v] else 'gray') for v in G.nodes],
+         edge_color=[G.edges[u, v]['color'] for u, v in G.edges])
+plt.title("Укладка планарного графа")
+plt.show()
